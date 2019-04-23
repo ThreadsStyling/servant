@@ -46,7 +46,7 @@ import           Data.Foldable
 import           Data.Functor.Alt
                  (Alt (..))
 import           Data.Maybe
-                 (maybe, maybeToList)
+                 (fromMaybe, maybeToList)
 import           Data.Proxy
                  (Proxy (..))
 import           Data.Semigroup
@@ -264,7 +264,7 @@ requestToClientRequest burl r = Client.defaultRequest
 
     (body, contentTypeHdr) = case requestBody r of
         Nothing           -> (Client.RequestBodyBS "", Nothing)
-        Just (body', typ) -> (convertBody body', Just (hContentType, renderHeader typ))
+        Just (body', typ) -> (convertBody body', Just (hContentType, fromMaybe (renderHeader typ) $ lookup hContentType (toList $ requestHeaders r)))
 
     isSecure = case baseUrlScheme burl of
         Http -> False
